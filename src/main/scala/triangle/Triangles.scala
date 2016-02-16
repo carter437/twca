@@ -10,7 +10,12 @@ object Triangles {
   case object Isosceles extends TriangleType
   case object Scalene extends TriangleType
 
-
+  /**
+    *
+    * @param sides Tuple containing the length of three sides of a triangle
+    * @tparam T the [[scala.math.Numeric[T]] type
+    * @return Either with error message or [[triangle.Triangles.TriangleType]]
+    */
   def triangleType[T : Numeric](sides: (T,T,T)): Either[String, TriangleType] = {
     val sidesSet = Set(sides._1,sides._2, sides._3).toList
 
@@ -29,7 +34,7 @@ object Triangles {
     * Uses the Triangle Inequality Theoreom to determine if the sides can form a valid triangle
     * [[https://en.wikipedia.org/wiki/Triangle_inequality]]
     *
-    * @param sides Tuple of length representing each side of a triangle
+    * @param sides Tuple representing length of each side of a triangle
     * @tparam T Numeric type
     * @return Either with error message or Unit
     */
