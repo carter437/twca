@@ -25,6 +25,14 @@ object Subset {
   /**
     *
     * Same as above. Wrote this one in case [[subset]] relied too heavily on the standard library
+    *
+    * This function recurses on each element in list1 and checks if it is in list2. This is done using the
+    * span function on [[scala.collection.immutable.List]]. Span takes from the list until the predicate supplied
+    * does not match.  The result is a list of two lists. The left List is the elements that were taken while
+    * the predicate applied, the right list is the remainder of the list.
+    *
+    * By recursing using tail for list1 and for list2 using the left list from the result of span appended with the
+    * tail from the right list from the result of span, the head of list1 is effectively removed from list2.
     */
      def subsetToo[T](list1:List[T], list2: List[T]): Boolean = {
        @tailrec
