@@ -27,14 +27,6 @@ object Subset {
     * Same as above. Wrote this one in case [[subset]] relied too heavily on the standard library
     */
      def subsetToo[T](list1:List[T], list2: List[T]): Boolean = {
-       val precheck = (list1, list2) match {
-         case (Nil,Nil) => true
-         case (Nil,_)  => true
-         case (_, Nil) => false
-         case _ if list1.length > list2.length => false
-         case _ => true
-       }
-
        @tailrec
        def loop(l1: List[T], l2: List[T]): Boolean = {
          (l1, l2) match {
@@ -43,12 +35,12 @@ object Subset {
            case (head::tail, _) => {
             l2.span(_ != head) match {
               case (_ , Nil) => false
-              case (beforeHead,found::rest) => loop(tail, beforeHead ::: rest)
+              case (before,found::rest) => loop(tail, before ::: rest)
             }
            }
          }
        }
 
-       precheck && loop(list1,list2)
+      list2.length >= list1.length && loop(list1,list2)
      }
 }

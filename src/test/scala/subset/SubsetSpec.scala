@@ -8,7 +8,7 @@ import Subset._
 class SubsetSpec extends PropSpec with PropertyChecks with MustMatchers {
   import Generators._
 
-  property("subset must correctly determine when list1 is a subset of list2"){
+  property("subset must correctly determine when a list is a subset of another list"){
     forAll(subsetGen){ case (list1, list2, list3) =>
       subset(list1,list2) mustBe true
       subset(list3,list2) mustBe false
