@@ -2,7 +2,7 @@ import sbt._
 
 object Version{
   val scalaTest = "2.2.4"
-  val scalaCheck = "1.13.0"
+  val scalaCheck = "1.12.5"
 }
 
 object Library{

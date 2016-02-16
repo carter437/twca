@@ -13,24 +13,46 @@ object Triangles {
 
   def triangleType[T : Numeric](sides: (T,T,T)): Either[String, TriangleType] = {
     val sidesSet = Set(sides._1,sides._2, sides._3).toList
-    sidesSet.length match {
-      case _ if !validateSides(sides) => Left(s"Impossible to form triangle with sides of length $sides")
-      case 3 => Right(Scalene)
-      case 2 => Right(Isosceles)
-      case 1 => Right(Equilateral)
-    }
+
+    for{
+      _ <- validateSides(sides).right
+      triangleType <- (sidesSet.length match {
+        case 3 => Right(Scalene)
+        case 2 => Right(Isosceles)
+        case 1 => Right(Equilateral)
+      }).right
+    } yield triangleType
   }
 
-  def validateSides[T: Numeric](sides: (T,T,T)): Boolean ={
-     val numeric = implicitly[Numeric[T]]
-     val sidesSeq = List(sides._1,sides._2, sides._3).map(numeric.toDouble)
-     @tailrec
-     def loop(sideCombinations: List[Seq[Double]]): Boolean = {
-       sideCombinations match {
-         case Nil => true
-         case List(a,b,c) :: tail => a + b > c  && loop(tail)
-       }
-     }
-     loop(Iterator.continually(sidesSeq).flatten.sliding(3,1).take(3).toSet.toList)
+  /**
+    *
+    * Uses the Triangle Inequality Theoreom to determine if the sides can form a valid triangle
+    * [[https://en.wikipedia.org/wiki/Triangle_inequality]]
+    *
+    * @param sides Tuple of length representing each side of a triangle
+    * @tparam T Numeric type
+    * @return Either with error message or Unit
+    */
+  private def validateSides[T: Numeric](sides: (T,T,T)): Either[String,Unit] = {
+    val num = implicitly[Numeric[T]]
+    def checkInequality(leftHand1: T, leftHand2: T, rightHand: T) = {
+      val sum = num.toDouble(leftHand1) + num.toDouble(leftHand2)
+      val rightHandDbl = num.toDouble(rightHand)
+      for{
+        _ <- {
+          if(sum == Double.PositiveInfinity || rightHandDbl == Double.PositiveInfinity)
+            Left(s"Sides too large $sides") else Right(())
+          }.right
+        _ <- (if(sum < rightHandDbl) Left(s"Sides of length $sides do not form a triangle") else Right(())).right
+      } yield ()
+    }
+
+    val (side1, side2, side3) = sides
+
+    for{
+      _ <- checkInequality(side1, side2, side3).right
+      _ <- checkInequality(side3, side2, side1).right
+      _ <- checkInequality(side1, side3, side2).right
+    } yield ()
   }
 }
