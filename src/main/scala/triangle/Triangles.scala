@@ -39,6 +39,7 @@ object Triangles {
       val sum = num.toDouble(leftHand1) + num.toDouble(leftHand2)
       val rightHandDbl = num.toDouble(rightHand)
       for{
+        //Check if numbers are too large
         _ <- {
           if(sum == Double.PositiveInfinity || rightHandDbl == Double.PositiveInfinity)
             Left(s"Sides too large $sides") else Right(())
